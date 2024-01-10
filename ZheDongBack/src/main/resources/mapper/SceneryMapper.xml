@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fxl.zhedong.mapper.SceneryMapper">
+    <resultMap id="SceneryMap" type="com.fxl.zhedong.entity.Scenery">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+        <result property="introduction" column="introduction"></result>
+        <result property="url" column="url"></result>
+        <result property="people.name" column="pname"></result>
+        <result property="people.introduction" column="pintroduction"></result>
+<!--        <association property="people" javaType="com.fxl.zhedong.entity.People">-->
+<!--            <id property="id" column="pid"></id>-->
+<!--            <result property="name" column="pname"></result>-->
+<!--            <result property="introduction" column="pintroduction"></result>-->
+<!--        </association>-->
+    </resultMap>
+    <select id="querySceneryPeopleByPeopleId" resultMap="SceneryMap">
+        select scenery.*, people.id as pid, people.name as pname, people.introduction as pintroduction from scenery
+        join people on scenery.peopleId = people.id where people.id = #{id}
+    </select>
+    <!--querySceneryByPeopleId-->
+    <select id="querySceneryByPeopleId" resultType="com.fxl.zhedong.entity.Scenery">
+        select scenery.name,scenery.introduction,picture from scenery
+        join people on scenery.peopleId = people.id
+        where people.id = #{id}
+    </select>
+
+    <!--querySceneryByPeopleNamePage-->
+    <select id="querySceneryByPeopleNamePage" resultType="com.fxl.zhedong.entity.Scenery">
+        select scenery.id, scenery.name, scenery.introduction, scenery.picture from scenery
+        join people on scenery.peopleId = people.id
+        where people.name = #{name}
+    </select>
+
+    <insert id="addScenery">
+        insert into scenery(peopleId,name,introduction,picture) values (#{peopleId},#{name},#{introduction},#{picture})
+    </insert>
+
+    <update id="updateScenery">
+        update scenery
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="introduction != null">
+                introduction=#{introduction},
+            </if>
+            <if test="picture != null">
+                picture=#{picture},
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <delete id="deleteScenery">
+        delete from scenery where id = #{id}
+    </delete>
+
+    <delete id="delectScenerys">
+        delete from scenery where id in
+        <foreach collection="eids" item="eid" separator="," open="(" close=")">
+            #{eid}
+        </foreach>
+    </delete>
+</mapper>

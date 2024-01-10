@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fxl.zhedong.mapper.PoemMapper">
+
+    <select id="queryPoemByExperienceIdPage" resultType="com.fxl.zhedong.entity.Poem">
+        select * from poem
+        join experience on poem.id = experience.id
+        where poem.experienceId = #{experienceId}
+    </select>
+    <insert id="addPoem">
+        insert into poem(experienceId,poemTitle,content,dynasty,year,source,type) values (#{experienceId},#{poemTitle},#{content},#{dynasty},#{year},#{source},#{type})
+    </insert>
+    <update id="updatePoem">
+        update poem
+        <set>
+            <if test="poemTitle != null">
+                poemTitle = #{poemTitle},
+            </if>
+            <if test="content != null">
+                content=#{content},
+            </if>
+            <if test="dynasty != null">
+                dynasty=#{dynasty},
+            </if>
+            <if test="year != null">
+                year=#{year},
+            </if>
+            <if test="source != null">
+                source=#{source},
+            </if>
+            <if test="type != null">
+                type=#{type},
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+    <delete id="deletePoem">
+        delete from poem where id = #{id}
+    </delete>
+    <delete id="delectPoems">
+        delete from poem where id in
+        <foreach collection="eids" item="eid" separator="," open="(" close=")">
+            #{eid}
+        </foreach>
+    </delete>
+</mapper>

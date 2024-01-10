@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fxl.zhedong.mapper.GroupMapper">
+
+    <select id="queryGroupByPeopleAndCityPage" resultType="com.fxl.zhedong.entity.Egroup">
+        select * from egroup
+        join people on egroup.peopleId = people.id
+        join city on egroup.cityId = city.id
+        where people.name = #{name} and city.cname = #{cname}
+    </select>
+
+    <insert id="addEgroup">
+        insert into egroup(beginYear,endYear,peopleId,cityId) values (#{beginYear},#{endYear},#{peopleId},#{cityId})
+    </insert>
+    <update id="updateEgroup">
+        update egroup
+        <set>
+            <if test="beginYear != null">
+                beginYear = #{beginYear},
+            </if>
+
+                endYear=#{endYear},
+
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <delete id="deleteEgroup">
+        delete from egroup where id = #{id}
+    </delete>
+
+    <delete id="delectEgroups">
+        delete from egroup where id in
+        <foreach collection="eids" item="eid" separator="," open="(" close=")">
+            #{eid}
+        </foreach>
+    </delete>
+</mapper>

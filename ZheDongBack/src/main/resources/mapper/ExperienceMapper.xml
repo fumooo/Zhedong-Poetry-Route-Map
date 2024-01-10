@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fxl.zhedong.mapper.ExperienceMapper">
+
+    <select id="queryExperienceByGroupIdPage" resultType="com.fxl.zhedong.entity.Experience">
+        select * from experience
+        join egroup on egroup.id = experience.groupId
+        where experience.groupId = #{groupId}
+    </select>
+    <insert id="addExperience">
+        insert into experience(groupId,beginYear,endYear,document) values (#{groupId},#{beginYear},#{endYear},#{document})
+    </insert>
+    <update id="updateExperience">
+        update experience
+        <set>
+            <if test="beginYear != null">
+                beginYear = #{beginYear},
+            </if>
+
+                endYear=#{endYear},
+
+            <if test="document != null">
+                document=#{document},
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <delete id="deleteExperience">
+        delete from experience where id = #{id}
+    </delete>
+
+    <delete id="delectExperiences">
+        delete from experience where id in
+        <foreach collection="eids" item="eid" separator="," open="(" close=")">
+            #{eid}
+        </foreach>
+    </delete>
+</mapper>

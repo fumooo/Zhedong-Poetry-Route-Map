@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fxl.zhedong.mapper.PeopleMapper">
+
+    <!-- queryAll -->
+    <select id="queryAll" resultType="com.fxl.zhedong.entity.People">
+        select * from people
+    </select>
+
+    <!-- queryByMohu -->
+    <select id="queryByMohu" resultType="com.fxl.zhedong.entity.People">
+        select * from people where name like concat('%',#{name},'%')
+    </select>
+
+    <select id="queryPeopleById" resultType="com.fxl.zhedong.entity.People">
+        select name,introduction,pictureP from people where id = #{id}
+    </select>
+
+    <select id="queryPeoplePage" resultType="com.fxl.zhedong.entity.People">
+        select * from people where name like concat('%',#{name},'%')
+    </select>
+
+    <insert id="addPeople">
+        insert into people(name,birth_date,death_date,introduction,pictureP) values (#{name},#{birthDate},#{deathDate},#{introduction},#{pictureP})
+    </insert>
+
+    <update id="updatePeople">
+        update people
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="birthDate != null">
+                birth_date=#{birthDate},
+            </if>
+            <if test="deathDate != null">
+                death_date=#{deathDate},
+            </if>
+            <if test="introduction != null">
+                introduction=#{introduction},
+            </if>
+            <if test="pictureP != null">
+                pictureP=#{pictureP}
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <delete id="deletePeople">
+        delete from people where id = #{id}
+    </delete>
+
+    <delete id="delectPeoples">
+        delete from people where id in
+        <foreach collection="eids" item="eid" separator="," open="(" close=")">
+            #{eid}
+        </foreach>
+    </delete>
+
+    <insert id="batchInsert" >
+        insert into people (name,birth_date,death_date,introduction) values
+        <foreach collection="list" item="cdo" separator=",">
+            (#{cdo.name}, #{cdo.birthDate}, #{cdo.deathDate}, #{cdo.introduction})
+        </foreach>
+    </insert>
+</mapper>

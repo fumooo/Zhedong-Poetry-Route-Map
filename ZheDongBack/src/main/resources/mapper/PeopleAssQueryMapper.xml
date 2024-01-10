@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fxl.zhedong.mapper.PeopleAssQueryMapper">
+    <!--queryInformationByCityAndPeopleName-->
+    <resultMap id="InformationMap" type="com.fxl.zhedong.entity.PeopleAssQuery.PeopleAssQuery">
+        <id property="id" column="Gid"></id>
+        <result property="beginYear" column="GbeginYear"></result>
+        <result property="endYear" column="GendYear"></result>
+        <collection property="peopleAssExperiences" ofType="com.fxl.zhedong.entity.PeopleAssQuery.PeopleAssExperience">
+<!--         experience.beginYear, experience.endYear, experience.document,-->
+            <result property="beginYear" column="beginYear"></result>
+            <result property="endYear" column="endYear"></result>
+            <result property="document" column="document"></result>
+            <collection property="poem" ofType="com.fxl.zhedong.entity.Poem">
+<!--  poem.poemTitle, poem.content, poem.dynasty, poem.year, poem.source, poem.type                -->
+                <result property="poemTitle" column="poemTitle"></result>
+                <result property="content" column="content"></result>
+                <result property="dynasty" column="dynasty"></result>
+                <result property="year" column="year"></result>
+                <result property="source" column="source"></result>
+                <result property="type" column="type"></result>
+            </collection>
+        </collection>
+    </resultMap>
+
+
+<!--分布查询第一步 查出egroup-->
+<!--    <select id="queryInformationByCityAndPeopleNameByStepOne" resultMap="InformationMapByStepOne">-->
+<!--        select egroup.id as Gid, egroup.beginYear as GbeginYear, egroup.endYear as GendYear from egroup-->
+<!--        join people on egroup.peopleId = people.id-->
+<!--        join city on egroup.cityId = city.id-->
+<!--        where people.name = #{PeopleName} and city.cname = #{Cityname}-->
+<!--    </select>-->
+<!--&lt;!&ndash;分布查询第二步 查出experience&ndash;&gt;-->
+<!--    <select id="queryInformationByCityAndPeopleNameByStepTwo" resultType="com.fxl.zhedong.entity.PeopleAssQuery.PeopleAssExperience">-->
+<!--        select id as Eid, beginYear, endYear, document from experience where groupId = #{Gid}-->
+<!--    </select>-->
+<!--&lt;!&ndash;分布查询第三部 查出poem&ndash;&gt;-->
+<!--    <select id="queryInformationByCityAndPeopleNameByStepThree" resultType="com.fxl.zhedong.entity.Poem">-->
+<!--        select * from poem where experienceId = #{Eid}-->
+<!--    </select>-->
+
+
+
+    <select id="queryInformationByCityAndPeopleName" resultMap="InformationMap">
+
+           select egroup.id as Gid, egroup.beginYear as GbeginYear, egroup.endYear as GendYear,
+           experience.beginYear, experience.endYear, experience.document,
+           poem.poemTitle, poem.content, poem.dynasty, poem.year, poem.source, poem.type
+           from egroup
+            join people on people.id = egroup.peopleId
+            join city on city.id = egroup.cityId
+           left join experience on experience.groupId = egroup.id
+           left join poem on experience.id = poem.experienceId
+           where people.name = #{PeopleName} and city.cname = #{Cityname}
+           order by GbeginYear asc
+    </select>
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fxl.zhedong.mapper.CityMapper">
+
+    <select id="queryByPeopleId" resultType="com.fxl.zhedong.entity.City">
+        select distinct city.id, city.cname, city.lng, city.lat from city
+        join egroup on city.id = egroup.cityId
+        join people on people.id = egroup.peopleId
+        where people.id = #{id}
+    </select>
+
+    <select id="queryLineByPeopleId" resultType="com.fxl.zhedong.entity.City">
+        select city.lng, city.lat from city
+        join egroup on city.id = egroup.cityId
+        join people on people.id = egroup.peopleId
+        where people.id = #{id} order by egroup.beginYear
+    </select>
+
+    <select id="queryCityPoemNumber" resultType="com.fxl.zhedong.entity.City">
+        select cname,count(poem.id) as CityPoemNumber from city
+        join egroup on egroup.cityId = city.id
+        join experience on experience.groupId = egroup.id
+        join poem on poem.experienceId = experience.id
+        group by cname
+    </select>
+
+    <select id="queryProvince" resultType="com.fxl.zhedong.entity.City">
+        select distinct province from city
+    </select>
+
+    <select id="queryCity" resultType="com.fxl.zhedong.entity.City">
+        select distinct cname from city
+    </select>
+
+    <select id="queryCityPage" resultType="com.fxl.zhedong.entity.City">
+        select * from city where cname like concat('%',#{cname},'%') and province like concat('%',#{province},'%')
+    </select>
+
+    <insert id="addCity">
+        insert into city(cname,lng,lat,province) values (#{cname},#{lng},#{lat},#{province})
+    </insert>
+
+    <update id="updateCity">
+        update city
+        <set>
+            <if test="cname != null">
+                cname = #{cname},
+            </if>
+            <if test="lng != null">
+                lng=#{lng},
+            </if>
+            <if test="lat != null">
+                lat=#{lat},
+            </if>
+            <if test="province != null">
+                province=#{province}
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <delete id="delectCity">
+        delete from city where id = #{id}
+    </delete>
+
+    <delete id="delectCitys">
+        delete from city where id in
+        <foreach collection="eids" item="eid" separator="," open="(" close=")">
+            #{eid}
+        </foreach>
+    </delete>
+
+
+<!--    <resultMap id="ProviceCityMap" type="com.fxl.zhedong.entity.CityProvince.CityProvince">-->
+<!--        <id property="id" column="id"></id>-->
+<!--        <result property="province" column="province"></result>-->
+<!--        <collection property="cities" ofType="com.fxl.zhedong.entity.City">-->
+<!--            <result property="city" column="city"></result>-->
+<!--        </collection>-->
+<!--    </resultMap>-->
+
+    <select id="queryAllProvince" resultType="com.fxl.zhedong.entity.City">
+        select distinct province from city
+    </select>
+
+    <select id="queryAllCity" resultType="com.fxl.zhedong.entity.City">
+        select id,cname from city
+    </select>
+
+    <insert id="batchInsertC" >
+        insert into city (cname,lng,lat,province) values
+        <foreach collection="list" item="cdo" separator=",">
+            (#{cdo.cname}, #{cdo.lng}, #{cdo.lat}, #{cdo.province})
+        </foreach>
+    </insert>
+</mapper>
