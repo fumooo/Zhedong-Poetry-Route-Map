@@ -62,8 +62,6 @@ maven
 
 2、安装完后用**npm run serve**运行前端项目，端口是8080，运行完点击local的地址即可运行
 
-![image-20230601220328451](/Users/fuxiaolong/Pictures/Typora/image-20230601220328451.png)
-
 3、城市和诗人管理的数据导入如文件夹中的excel为例子
 
 #### 后端ZheDongBack（开发使用的idea）
